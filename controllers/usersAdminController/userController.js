@@ -24,15 +24,14 @@ const userAdmin = async (req, res) => {
        } 
 
        // Create token for user/Admin
-       const token = jwt.sign({id: admin._id, role: admin.role, username: admin.username},
+       const token = jwt.sign({ id: admin._id, role: admin.role, username: admin.username },
         process.env.JWT_SECRET_KEY, {expiresIn: "1h"});
        
         // Send token in HTTP-only cookie
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV !== 'development',
-                sameSite: 'strict', //PREVENT CSRF ATTACKS
-                // sameSite: 'none', //PREVENT CSRF ATTACKS
+                sameSite: 'none', //PREVENT CSRF ATTACKS
                 maxAge: 1000 * 60 * 60 * 24,
             });
         res.status(200).json({ message: " Admin Login successful ", token: token, 
@@ -41,7 +40,6 @@ const userAdmin = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({message: "Server Error"});
-        
     }
 }
 

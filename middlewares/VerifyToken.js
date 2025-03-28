@@ -1,12 +1,18 @@
 const jwt = require('jsonwebtoken');
+const userModel = require('../models/usersAdminModel/userModel');
+dotenv = require('dotenv');
+dotenv.config();
 
-const verifyAdminToken =  (req, res, next) => {
-    const token = req.headers['authorization' || "Authorization" ]?.split(' ')[1];
+const verifyAdminToken = async (req, res, next) => {
+    try {
+        // const token = req.cookies.jwt;
+        // const token = req.headers.authorization || req.headers.Authorization; /
+        const token = req.headers.authorization?.split(" ")[1] || req.cookies.jwt;
+        console.log('Token received2:',typeof(req.headers),":::",req.headers.authorization ); // Debug
 
-    if (!token) {
-        return res.status(401).json({ message: 'Access Denied. Only Admin is Allowed' });
+    if (!token) { return res.status(401).json({ message: 'Access Denied. Only Admin is Allowed' }) };
         // return res.status(201).json({ message: 'Access Granted.  Admin is Allowed' });
-    }
+    
     // else{
     //     // return res.status(401).json({ message: 'Access Denied. Only Admin is Allowed' });
     //     return res.status(201).json({ message: 'Access Granted.  Admin is Allowed' });
@@ -19,9 +25,44 @@ const verifyAdminToken =  (req, res, next) => {
         }
         req.user = user;
         next();
-    })
+    });
+
+    // let token = req.cookies.token;
+    // if (token) {
+    //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //   const user = await userModel.findById(decoded.userId).select("isAdmin email");
+    //   req.user = {
+    //     email: user.email,
+    //     isAdmin: user.isAdmin,
+    //     userId: decoded.userId,
+    //   };
+    //   next();
+    // } 
+    
+} catch (error) {
+        console.error(error);
+        return res
+          .status(401)
+          .json({ status: false, message: "Not Allowed, Please Login" });
+        
+    }
 
 }
+
+//  const authMiddleware = (req, res, next) => {
+//     const token = req.headers.authorization?.split(' ')[1];
+//     console.log('Token received:', token); // Debug
+//     if (!token) return res.status(401).json({ message: 'Unauthorized' });
+//     // Verify token logic...
+
+//     jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+//         if (err) {
+//             return res.status(403).json({ message: 'Invalid credentials' });
+//         }
+//         req.user = user;
+//         next();
+//     });
+//   };
 
 
 // VALIDATE TOKEN

@@ -53,23 +53,48 @@ const getABook = async(req, res)=>{
 //UPDATE BOOK API CONTROLLER FUNCTION
 const updateBook = async(req, res) =>{
     try {
+        // const bookId = req.params.id;
+        // const { title, description, category, trending, coverImage, oldPrice, newPrice } = req.body;
+        // //FIND BOOK BY ID AND UPDATE
+        // const books = await Book.findByIdAndUpdate({_id: req.params.bookId, ...req.body,}, {new: true});
+        // if(books){
+        //     books.title = title;
+        //     books.description = description;
+        //     books.category = category;
+        //     books.trending = trending;
+        //     books.coverImage = coverImage;
+        //     books.oldPrice = oldPrice;
+        //     books.newPrice = newPrice;
+        //     await books.save();
+        //     res.status(200).json({message: "Book updated successfully", books});
+        // }else{
+        //     res.status(404).json({message: "Book not found"});
+        // }; 
+
         const bookId = req.params.id;
         const { title, description, category, trending, coverImage, oldPrice, newPrice } = req.body;
-        //FIND BOOK BY ID AND UPDATE
-        const books = await Book.findByIdAndUpdate({_id: bookId});
-        if(books){
-            books.title = title;
-            books.description = description;
-            books.category = category;
-            books.trending = trending;
-            books.coverImage = coverImage;
-            books.oldPrice = oldPrice;
-            books.newPrice = newPrice;
-            await books.save();
-            res.status(200).json({message: "Book updated successfully", books});
-        }else{
-            res.status(404).json({message: "Book not found"});
-        }; 
+        
+        // FIND BOOK BY ID AND UPDATE
+        const book = await Book.findByIdAndUpdate(
+            bookId, 
+            {
+                title,
+                description,
+                category,
+                trending,
+                coverImage,
+                oldPrice,
+                newPrice
+            }, 
+            { new: true }
+        );
+        
+        if (book) {
+            res.status(200).json({ message: "Book updated successfully", book });
+        } else {
+            res.status(404).json({ message: "Book not found" });
+        }
+        
         } catch (error) {
         console.log(error);
         res.status(500).json({message: "Cannot update book"});

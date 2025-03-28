@@ -27,7 +27,7 @@ const bookSchema = new Schema({
 
     coverImage: {
         type: String,
-        required: true
+        required: false
     },
     
     oldPrice: {
