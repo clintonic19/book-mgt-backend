@@ -7,15 +7,17 @@ const createOrder = async (req, res) => {
         //DESTRUCTURE REQUEST BODY
         const { name, email, address, phone, productIds, totalPrice } = req.body; 
         //CREATE NEW ORDER
-        const order = new OrderModel({ name, email, address, phone, productIds, totalPrice });
+        // const order =   new OrderModel({ name, email, address, phone, productIds, totalPrice });
+        const order = await OrderModel(req.body);
         //SAVE ORDER
         await order.save();
         res.status(201).json({ message: "Order created successfully", order });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Cannot create order" });
-        
+        res.status(500).json({ message: "Cannot create order" }); 
     }
+    console.log("Order Created Successfully::::", req.body);
+    
 };
 
 //GET ORDER BY EMAIL API CONTROLLER FUNCTION   
