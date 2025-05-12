@@ -14,7 +14,7 @@ const bookSchema = new Schema({
         type: String,
         required: true
     },
-
+                   
     category: {
         type: String,
         required: true
@@ -39,6 +39,12 @@ const bookSchema = new Schema({
         type: Number,
         required: true
     },
+
+    quantity: {
+        type: Number,
+        required: true,
+        min: 0  // optional: prevents negative quantities
+    }
 
 }, {timestamps: true})
 

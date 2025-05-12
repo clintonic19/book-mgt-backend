@@ -20,6 +20,47 @@ const createBook = async (req, res) => {
     }
 };
 
+//SEARCH BOOK API CONTROLLER FUNCTION
+const searchBook = async (req, res) =>{
+    try {
+        const searchQuery = req.query.q;
+        const removeSpecialChars = searchQuery?.replace(/[^a-zA-Z0-9]/g, "");
+        // const searchQuery = req.params.q;
+
+        ///
+        // if (!searchQuery || typeof searchQuery !== 'string' || searchQuery.trim() === '') {
+        //     return res.status(400).json({ message: "Search query is required" });
+        //   }
+        //   const searchRegex = new RegExp(searchQuery, 'i');
+
+          console.log("Search Query::::", searchQuery);
+        console.log("Search Query::::", removeSpecialChars);
+
+        const books = await Book.find({
+            // case-insensitive search
+            $or: [
+                { title: { $regex: new RegExp(removeSpecialChars, 'i') } },
+                // { title: { $regex: searchRegex } },
+                // { description: { $regex: new RegExp(removeSpecialChars, 'i') } },
+                // { category: { $regex: new RegExp(removeSpecialChars, 'i') } },
+                // { title: { $regex: "searchQuery", $options: 'i' } },
+                // { description: { $regex: "searchQuery", $options: 'i' } },
+                // { category: { $regex: "searchQuery", $options: 'i' } },
+            ]
+        });
+        
+        if(books.length === 0){
+            return res.status(404).json({message: "No books found"});
+        }
+        // const books = await Book.find({title: {$regex: searchQuery, $options: 'i'}}).sort({ createdAt: -1 });    
+        res.status(200).json({message: "Search results", books});
+        console.log(books);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message: "Cannot get books"});
+    }
+}
+
 //GET ALL BOOKS API CONTROLLER FUNCTION
 const getAllBooks = async(req, res) =>{
    try {
@@ -36,7 +77,9 @@ const getAllBooks = async(req, res) =>{
 const getABook = async(req, res)=>{
     try {
         const bookId = req.params.id;
-        const book = await Book.findById({_id: bookId});
+        // const book = await Book.findById({_id: bookId});
+        const book = await Book.findById(bookId);
+        console.log(bookId);
         if(book){
             res.status(200).json({message: "Book found", book});
         }else{
@@ -120,4 +163,4 @@ const deleteBook = async(req, res) => {
     }
 }
 
-module.exports = { createBook, getAllBooks, updateBook, getABook, deleteBook };
+module.exports = { createBook, searchBook, getAllBooks, updateBook, getABook, deleteBook };
